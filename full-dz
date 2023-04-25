@@ -1,0 +1,124 @@
+#include <iostream>
+
+using namespace std;
+
+template <typename T>
+class List
+{
+	struct Item
+	{
+		T inf;
+		Item* next;
+		Item(T x, Item* ref = nullptr) : inf(x), next(ref) {}
+	} *first = nullptr, * last = nullptr;
+
+public:
+	List(){}
+	List(const List& other) {
+		first = nullptr;
+		last = nullptr;
+		for (Item* t = other.first; t != nullptr; t = t->next) {
+			push_back(t->inf);
+		}
+	}
+	void add(T x){
+		Item* item = new Item(x);
+		if (last != nullptr)
+			last->next = item;
+		last = item;
+		if (first == nullptr)
+			first = last;
+	}
+
+	void print(){
+		for (Item* t = first; t != nullptr; t = t->next)
+			cout << t->inf << " ";
+		cout << endl;
+	}
+
+	void duplicateEven(){
+		if (first == nullptr) {
+			return;
+		}
+		for (Item* t = first; t != nullptr; t = t->next) {
+			if (t->inf % 2 == 0) {
+				Item* temp = new Item;
+				temp->inf = t->inf;
+				temp->next = t->next;
+				t->next = temp;
+				t = t->next;
+			}
+		}
+		last = last->next;
+	}
+	void clear() {
+		while (first != nullptr) {
+			Item* temp = first;
+			first = first->next;
+			delete temp;
+		}
+		last = nullptr;
+	}
+};
+
+template <typename T>
+class SimpleVector {
+private:
+	T* data;
+	int size;
+	int capacity;
+public:
+	SimpleVector() {
+		data = nullptr;
+		size = 0;
+		capacity = 0;
+	}
+	void push_back(const T& value) {
+		if (size == capacity) {
+			capacity = (capacity == 0) ? 1 : 2 * capacity;
+			T* new_data = new T[capacity];
+			for (int i = 0; i < size; i++) {
+				new_data[i] = data[i];
+			}
+			delete[] data;
+			data = new_data;
+		}
+		data[size++] = value;
+	}
+	T& operator[](int index) {
+		return data[index];
+	}
+	~SimpleVector() {
+		delete[] data;
+	}
+};
+
+int main()
+{
+	List<int> lst;
+	lst.add(1);
+	lst.add(2);
+	lst.add(3);
+	lst.add(4);
+	lst.add(5);
+	lst.print();
+
+	List<int> lst2(lst);
+
+	//lst.duplicateEven();
+	lst2.print();
+	return 0;
+}
+
+/* №5
+   List  
+   a) O(n) 
+   б) O(1)
+   в) O(n)
+   г) O(n)
+   SimpleVector 
+   a) O(1)
+   б) O(n)
+   в) O(n)
+   г) O(n)
+*/
